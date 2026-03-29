@@ -1,0 +1,107 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Install fyne CLI
+        run: go install fyne.io/fyne/v2/cmd/fyne@latest
+
+      - name: Package macOS app
+        run: |
+          cd cmd/passit
+          fyne package -os darwin -icon ../../assets/icon.png -name PassIt -appID com.p4tin.passit
+          mv PassIt.app ../../PassIt.app
+
+      - name: Archive
+        run: zip -r PassIt-macOS-${{ github.ref_name }}.zip PassIt.app
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos
+          path: PassIt-macOS-${{ github.ref_name }}.zip
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y gcc libgl1-mesa-dev xorg-dev
+
+      - name: Install fyne CLI
+        run: go install fyne.io/fyne/v2/cmd/fyne@latest
+
+      - name: Package Linux binary
+        run: |
+          cd cmd/passit
+          fyne package -os linux -icon ../../assets/icon.png -name PassIt -appID com.p4tin.passit
+          mv PassIt ../../PassIt
+
+      - name: Archive
+        run: tar -czf PassIt-Linux-${{ github.ref_name }}.tar.gz PassIt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux
+          path: PassIt-Linux-${{ github.ref_name }}.tar.gz
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Install fyne CLI
+        run: go install fyne.io/fyne/v2/cmd/fyne@latest
+
+      - name: Package Windows exe
+        shell: pwsh
+        run: |
+          cd cmd/passit
+          fyne package -os windows -icon ../../assets/icon.png -name PassIt -appID com.p4tin.passit
+          Move-Item PassIt.exe ../../PassIt.exe
+
+      - name: Archive
+        shell: pwsh
+        run: Compress-Archive -Path PassIt.exe -DestinationPath PassIt-Windows-${{ github.ref_name }}.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: PassIt-Windows-${{ github.ref_name }}.zip
+
+  release:
+    needs: [build-macos, build-linux, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*
+          generate_release_notes: true
