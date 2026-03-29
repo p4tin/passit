@@ -45,5 +45,9 @@ app.*.map.json
 /android/app/release
 
 
-passIt
+PassIt
+PassIt.app
+PassIt-linux
+PassIt.exe
+fyne-cross/
 .claude/
