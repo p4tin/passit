@@ -18,14 +18,16 @@ jobs:
         with:
           go-version: '1.24'
 
-      - name: Install fyne CLI
-        run: go install fyne.io/fyne/v2/cmd/fyne@latest
-
-      - name: Package macOS app
+      - name: Build and bundle macOS app
         run: |
-          cd cmd/passit
-          fyne package -os darwin -icon ../../assets/icon.png -name PassIt -appID com.p4tin.passit
-          mv PassIt.app ../../PassIt.app
+          go build -o PassIt ./cmd/passit
+          mkdir -p PassIt.app/Contents/MacOS PassIt.app/Contents/Resources
+          cp PassIt PassIt.app/Contents/MacOS/PassIt
+          mkdir -p /tmp/passit.iconset
+          cp assets/icon.png /tmp/passit.iconset/icon_32x32@2x.png
+          iconutil -c icns /tmp/passit.iconset -o PassIt.app/Contents/Resources/icon.icns
+          rm -rf /tmp/passit.iconset
+          cp scripts/Info.plist PassIt.app/Contents/Info.plist
 
       - name: Archive
         run: zip -r PassIt-macOS-${{ github.ref_name }}.zip PassIt.app
@@ -47,14 +49,8 @@ jobs:
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y gcc libgl1-mesa-dev xorg-dev
 
-      - name: Install fyne CLI
-        run: go install fyne.io/fyne/v2/cmd/fyne@latest
-
-      - name: Package Linux binary
-        run: |
-          cd cmd/passit
-          fyne package -os linux -icon ../../assets/icon.png -name PassIt -appID com.p4tin.passit
-          mv PassIt ../../PassIt
+      - name: Build Linux binary
+        run: go build -o PassIt ./cmd/passit
 
       - name: Archive
         run: tar -czf PassIt-Linux-${{ github.ref_name }}.tar.gz PassIt
@@ -73,15 +69,8 @@ jobs:
         with:
           go-version: '1.24'
 
-      - name: Install fyne CLI
-        run: go install fyne.io/fyne/v2/cmd/fyne@latest
-
-      - name: Package Windows exe
-        shell: pwsh
-        run: |
-          cd cmd/passit
-          fyne package -os windows -icon ../../assets/icon.png -name PassIt -appID com.p4tin.passit
-          Move-Item PassIt.exe ../../PassIt.exe
+      - name: Build Windows exe
+        run: go build -o PassIt.exe ./cmd/passit
 
       - name: Archive
         shell: pwsh
