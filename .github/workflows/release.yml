@@ -109,7 +109,7 @@ jobs:
           generate_release_notes: true
 
       - name: Checkout main branch
-        run: git checkout main
+        run: git fetch origin main && git checkout origin/main
 
       - name: Update docs with latest version links
         run: |
