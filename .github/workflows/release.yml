@@ -102,9 +102,6 @@ jobs:
         with:
           path: artifacts
 
-      - name: Add user guide
-        run: cp PassIt-UserGuide.pdf artifacts/PassIt-UserGuide.pdf
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2.6.1
         with:
