@@ -1,7 +1,10 @@
 package models
 
 import (
+	"crypto/rand"
+	"encoding/binary"
 	"encoding/json"
+	"io"
 	"time"
 )
 
@@ -106,23 +109,23 @@ func (s *Site) FindAccount(accountID string) *Account {
 func (v *Vault) Search(query string) ([]*Site, []*Account) {
 	var matchingSites []*Site
 	var matchingAccounts []*Account
-	
+
 	query = toLower(query)
-	
+
 	for _, site := range v.Sites {
 		siteMatches := contains(toLower(site.Name), query)
-		
+
 		if siteMatches {
 			matchingSites = append(matchingSites, site)
 		}
-		
+
 		for _, account := range site.Accounts {
 			if contains(toLower(account.Username), query) {
 				matchingAccounts = append(matchingAccounts, account)
 			}
 		}
 	}
-	
+
 	return matchingSites, matchingAccounts
 }
 
@@ -153,7 +156,18 @@ func generateRandomString(length int) string {
 }
 
 func randomInt(max int) int {
-	return int(time.Now().UnixNano()) % max
+	// Generate a random uint64 using crypto/rand
+	var b [8]byte
+	if _, err := io.ReadFull(rand.Reader, b[:]); err != nil {
+		// fallback to time-based if crypto/rand fails (shouldn't happen)
+		return int(time.Now().UnixNano()) % max
+	}
+	// Convert to int and map to [0, max)
+	n := int(binary.BigEndian.Uint64(b[:]) % uint64(max))
+	if n < 0 {
+		n = -n
+	}
+	return n
 }
 
 func toLower(s string) string {
@@ -175,7 +189,7 @@ func contains(s, substr string) bool {
 	if len(substr) > len(s) {
 		return false
 	}
-	
+
 	for i := 0; i <= len(s)-len(substr); i++ {
 		match := true
 		for j := 0; j < len(substr); j++ {
