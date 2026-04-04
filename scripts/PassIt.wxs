@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Product Id="*" Name="PassIt" Language="1033" Version="1.0.0.0" Manufacturer="p4tin" UpgradeCode="12345678-1234-1234-1234-123456789012">
     <Package InstallerVersion="200" Compressed="yes" />
     <Media Id="1" Cabinet="PassIt.cab" EmbedCab="yes" />
@@ -9,29 +9,23 @@
       <ComponentRef Id="StartMenuShortcut" />
     </Feature>
 
-    <UIRef Id="WixUI_InstallScope" />
-  </Product>
+    <StandardDirectory Id="ProgramFilesFolder">
+      <Directory Id="INSTALLFOLDER" Name="PassIt" />
+    </StandardDirectory>
 
-  <Fragment>
-    <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="ProgramFilesFolder">
-        <Directory Id="INSTALLFOLDER" Name="PassIt" />
-      </Directory>
-      <Directory Id="ProgramMenuFolder">
-        <Directory Id="ApplicationProgramsFolder" Name="PassIt" />
-      </Directory>
-    </Directory>
-  </Fragment>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="PassIt" />
+    </StandardDirectory>
 
-  <Fragment>
     <Component Id="PassItExe" Directory="INSTALLFOLDER" Guid="87654321-4321-4321-4321-210987654321">
-      <File Id="PassItExeFile" Source="PassIt.exe" KeyPath="yes" />
+      <File Source="PassIt.exe" KeyPath="yes" />
       <RegistryValue Root="HKCU" Key="Software\p4tin\PassIt" Name="installed" Type="integer" Value="1" KeyPath="yes" />
     </Component>
+
     <Component Id="StartMenuShortcut" Directory="ApplicationProgramsFolder" Guid="11111111-1111-1111-1111-111111111111">
-      <Shortcut Id="StartMenuPassIt" Name="PassIt" Target="[INSTALLFOLDER]PassIt.exe" WorkingDirectory="INSTALLFOLDER" />
+      <Shortcut Id="StartMenuPassIt" Name="PassIt" Target="[#PassIt.exe]" WorkingDirectory="INSTALLFOLDER" />
       <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
       <RegistryValue Root="HKCU" Key="Software\p4tin\PassIt" Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
     </Component>
-  </Fragment>
+  </Product>
 </Wix>
