@@ -4,13 +4,15 @@ A simple, secure password manager for macOS, Linux, and Windows
 
 ## 1. Download & Install
 
-### Where to download
+### Quick Download
 
-Go to the [PassIt releases page on GitHub](https://github.com/p4tin/passit/releases) and download the package for your operating system from the latest release:
+Download the latest version for your operating system:
 
-- `PassIt-macOS-<version>.dmg` - macOS
-- `PassIt-Linux-<version>.tar.gz` - Linux (x86-64)
-- `PassIt-Windows-<version>.msi` - Windows (x86-64)
+- 🍎 **macOS**: [PassIt-macOS.dmg](https://github.com/p4tin/passit/releases/latest/download/PassIt-macOS-latest.dmg) (Intel & Apple Silicon)
+- 🐧 **Linux**: [PassIt-Linux.tar.gz](https://github.com/p4tin/passit/releases/latest/download/PassIt-Linux-latest.tar.gz) (x86-64)
+- 🪟 **Windows**: [PassIt-Windows.msi](https://github.com/p4tin/passit/releases/latest/download/PassIt-Windows-latest.msi) (x86-64)
+
+> Note: These links always point to the latest release. You can also visit the [releases page](https://github.com/p4tin/passit/releases) to see all versions and release notes.
 
 ### macOS
 

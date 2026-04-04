@@ -1,0 +1,4 @@
+theme: jekyll-theme-minimal
+title: PassIt Password Manager
+description: A simple, secure, local-only password manager
+show_downloads: false

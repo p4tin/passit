@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"net/url"
 	"strings"
 	"time"
 
@@ -103,6 +104,10 @@ func (mw *MainWindow) createToolbar() *widget.Toolbar {
 		widget.NewToolbarSeparator(),
 		widget.NewToolbarAction(theme.SettingsIcon(), func() {
 			mw.showChangePasswordDialog()
+		}),
+		widget.NewToolbarSeparator(),
+		widget.NewToolbarAction(theme.HelpIcon(), func() {
+			mw.openDocs()
 		}),
 		widget.NewToolbarSeparator(),
 		widget.NewToolbarAction(theme.LogoutIcon(), func() {
@@ -560,4 +565,9 @@ func (mw *MainWindow) showImportDialog() {
 		mw.refreshSites()
 		dialog.ShowInformation("Import", "Vault imported successfully.", mw.window)
 	}, mw.window)
+}
+
+func (mw *MainWindow) openDocs() {
+	docsURL, _ := url.Parse("https://p4tin.github.io/passit/")
+	fyne.CurrentApp().OpenURL(docsURL)
 }
