@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Product Id="*" Name="PassIt" Language="1033" Version="1.0.0.0" Manufacturer="p4tin" UpgradeCode="12345678-1234-1234-1234-123456789012">
-    <Package InstallerVersion="200" Compressed="yes" />
-    <Media Id="1" Cabinet="PassIt.cab" EmbedCab="yes" />
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="PassIt" Manufacturer="p4tin" Version="1.0.0.0" UpgradeCode="12345678-1234-1234-1234-123456789012" Scope="perUserOrMachine">
+    <Summary Title="PassIt Password Manager" Subject="PassIt Installer" Description="A local-only, encrypted password manager" Keywords="password, manager, secure" />
 
-    <Feature Id="ProductFeature" Title="PassIt" Level="1">
-      <ComponentRef Id="PassItExe" />
-      <ComponentRef Id="StartMenuShortcut" />
-    </Feature>
+    <MediaTemplate EmbedCab="yes" />
 
     <StandardDirectory Id="ProgramFilesFolder">
       <Directory Id="INSTALLFOLDER" Name="PassIt" />
@@ -17,15 +13,21 @@
       <Directory Id="ApplicationProgramsFolder" Name="PassIt" />
     </StandardDirectory>
 
+    <Feature Id="ProductFeature" Title="PassIt" Level="1">
+      <ComponentRef Id="PassItExe" />
+      <ComponentRef Id="StartMenuShortcut" />
+    </Feature>
+
     <Component Id="PassItExe" Directory="INSTALLFOLDER" Guid="87654321-4321-4321-4321-210987654321">
-      <File Source="PassIt.exe" KeyPath="yes" />
-      <RegistryValue Root="HKCU" Key="Software\p4tin\PassIt" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      <File Id="PassItExeFile" Source="PassIt.exe" KeyPath="yes" />
     </Component>
 
     <Component Id="StartMenuShortcut" Directory="ApplicationProgramsFolder" Guid="11111111-1111-1111-1111-111111111111">
-      <Shortcut Id="StartMenuPassIt" Name="PassIt" Target="[#PassIt.exe]" WorkingDirectory="INSTALLFOLDER" />
+      <Shortcut Id="StartMenuPassIt" Name="PassIt" Target="[INSTALLFOLDER]PassIt.exe" WorkingDirectory="INSTALLFOLDER" />
       <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
-      <RegistryValue Root="HKCU" Key="Software\p4tin\PassIt" Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
+      <RegistryValue Root="HKCU" Key="Software\p4tin\PassIt" Name="installed" Type="integer" Value="1" KeyPath="yes" />
     </Component>
-  </Product>
+
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+  </Package>
 </Wix>
