@@ -103,7 +103,23 @@ jobs:
           path: artifacts
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2.11
+        uses: softprops/action-gh-release@v2.6.1
         with:
           files: artifacts/**/*
           generate_release_notes: true
+
+      - name: Update docs with latest version links
+        run: |
+          VERSION="${{ github.ref_name }}"
+          sed -i "s|PassIt-macOS-v[0-9.]*\.dmg|PassIt-macOS-${VERSION}.dmg|g" docs/index.md
+          sed -i "s|PassIt-Linux-v[0-9.]*\.tar\.gz|PassIt-Linux-${VERSION}.tar.gz|g" docs/index.md
+          sed -i "s|PassIt-Windows-v[0-9.]*\.msi|PassIt-Windows-${VERSION}.msi|g" docs/index.md
+          sed -i "s|/download/v[0-9.]*|/download/${VERSION}|g" docs/index.md
+
+      - name: Commit docs update
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add docs/index.md
+          git commit -m "docs: update download links for ${{ github.ref_name }}"
+          git push
