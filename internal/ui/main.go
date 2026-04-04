@@ -93,6 +93,14 @@ func (mw *MainWindow) createToolbar() *widget.Toolbar {
 			mw.showAddSiteDialog()
 		}),
 		widget.NewToolbarSeparator(),
+		widget.NewToolbarAction(theme.DocumentSaveIcon(), func() {
+			mw.showExportDialog()
+		}),
+		widget.NewToolbarSeparator(),
+		widget.NewToolbarAction(theme.FolderOpenIcon(), func() {
+			mw.showImportDialog()
+		}),
+		widget.NewToolbarSeparator(),
 		widget.NewToolbarAction(theme.SettingsIcon(), func() {
 			mw.showChangePasswordDialog()
 		}),
@@ -514,4 +522,42 @@ func (mw *MainWindow) Show() {
 
 func (mw *MainWindow) Hide() {
 	mw.window.Hide()
+}
+
+func (mw *MainWindow) showExportDialog() {
+	dialog.ShowFileSave(func(uc fyne.URIWriteCloser, err error) {
+		if err != nil {
+			dialog.ShowError(err, mw.window)
+			return
+		}
+		if uc == nil {
+			return // cancelled
+		}
+		defer uc.Close()
+		if err := mw.storage.GetVault().ExportCSV(uc); err != nil {
+			dialog.ShowError(err, mw.window)
+			return
+		}
+		dialog.ShowInformation("Export", "Vault exported successfully.", mw.window)
+	}, mw.window)
+}
+
+func (mw *MainWindow) showImportDialog() {
+	dialog.ShowFileOpen(func(uc fyne.URIReadCloser, err error) {
+		if err != nil {
+			dialog.ShowError(err, mw.window)
+			return
+		}
+		if uc == nil {
+			return // cancelled
+		}
+		defer uc.Close()
+		if err := mw.storage.GetVault().ImportCSV(uc); err != nil {
+			dialog.ShowError(err, mw.window)
+			return
+		}
+		mw.storage.Save()
+		mw.refreshSites()
+		dialog.ShowInformation("Import", "Vault imported successfully.", mw.window)
+	}, mw.window)
 }

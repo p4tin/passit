@@ -3,6 +3,7 @@ package models
 import (
 	"crypto/rand"
 	"encoding/binary"
+	"encoding/csv"
 	"encoding/json"
 	"io"
 	"time"
@@ -203,4 +204,51 @@ func contains(s, substr string) bool {
 		}
 	}
 	return false
+}
+
+func (v *Vault) ExportCSV(w io.Writer) error {
+	cw := csv.NewWriter(w)
+	cw.Write([]string{"site_name", "site_url", "username", "password", "notes"})
+	for _, site := range v.Sites {
+		for _, acc := range site.Accounts {
+			cw.Write([]string{site.Name, site.URL, acc.Username, acc.Password, acc.Notes})
+		}
+	}
+	cw.Flush()
+	return cw.Error()
+}
+
+func (v *Vault) ImportCSV(r io.Reader) error {
+	cr := csv.NewReader(r)
+	cr.FieldsPerRecord = -1 // allow variable columns (notes may be missing)
+	records, err := cr.ReadAll()
+	if err != nil {
+		return err
+	}
+	for _, row := range records[1:] { // skip header
+		if len(row) < 4 {
+			continue
+		}
+		siteName, siteURL, username, password := row[0], row[1], row[2], row[3]
+		notes := ""
+		if len(row) > 4 {
+			notes = row[4]
+		}
+
+		// Find or create site
+		var site *Site
+		for _, s := range v.Sites {
+			if s.Name == siteName {
+				site = s
+				break
+			}
+		}
+		if site == nil {
+			site = NewSite(siteName, siteURL)
+			v.AddSite(site)
+		}
+		site.AddAccount(NewAccount(username, password, notes))
+	}
+	v.Updated = time.Now()
+	return nil
 }

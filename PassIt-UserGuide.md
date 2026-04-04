@@ -89,6 +89,31 @@ Click the **lock** icon in the toolbar to lock PassIt immediately. You can also 
 2. Enter your current password, then choose and confirm a new one.
 3. Click **Change Password**.
 
+### Exporting your vault
+
+Click the **Export** (save) icon in the toolbar. Choose a location and filename — PassIt will write a CSV file containing all your sites and accounts.
+
+> Keep the exported CSV file secure — it contains your passwords in plain text.
+
+**Example exported CSV:**
+```csv
+site_name,site_url,username,password,notes
+GitHub,https://github.com,user@example.com,p4ssw0rd123,Personal account
+Gmail,https://gmail.com,john.doe@gmail.com,secur3Pass!,Work email
+Netflix,https://www.netflix.com,shared.account@email.com,netflixPwd456,Family plan
+```
+
+### Importing a CSV
+
+Click the **Import** (folder) icon in the toolbar. Select a previously exported CSV file. PassIt will merge the entries into your current vault — existing sites with the same name will have the new accounts appended.
+
+The CSV file must have the following columns (in order):
+- `site_name` — Name of the website or service
+- `site_url` — URL of the website
+- `username` — Username or email address
+- `password` — Password for the account
+- `notes` — Optional notes (can be blank)
+
 ---
 
 ## 4. System Tray
