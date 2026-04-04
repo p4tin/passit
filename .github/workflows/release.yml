@@ -78,7 +78,7 @@ jobs:
           go-version: '1.24'
 
       - name: Build Windows exe
-        run: go build -o PassIt.exe ./cmd/passit
+        run: go build -ldflags "-H windowsgui" -o PassIt.exe ./cmd/passit
 
       - name: Install WiX
         run: dotnet tool install --global wix
