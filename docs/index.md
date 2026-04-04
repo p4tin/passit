@@ -8,11 +8,11 @@ A simple, secure password manager for macOS, Linux, and Windows
 
 Download the latest version for your operating system:
 
-- 🍎 **macOS**: [PassIt-macOS.dmg](https://github.com/p4tin/passit/releases/latest/download/PassIt-macOS-latest.dmg) (Intel & Apple Silicon)
-- 🐧 **Linux**: [PassIt-Linux.tar.gz](https://github.com/p4tin/passit/releases/latest/download/PassIt-Linux-latest.tar.gz) (x86-64)
-- 🪟 **Windows**: [PassIt-Windows.msi](https://github.com/p4tin/passit/releases/latest/download/PassIt-Windows-latest.msi) (x86-64)
+- 🍎 **macOS**: [PassIt-macOS-v0.0.11.dmg](https://github.com/p4tin/passit/releases/download/v0.0.11/PassIt-macOS-v0.0.11.dmg)
+- 🐧 **Linux**: [PassIt-Linux-v0.0.11.tar.gz](https://github.com/p4tin/passit/releases/download/v0.0.11/PassIt-Linux-v0.0.11.tar.gz)
+- 🪟 **Windows**: [PassIt-Windows-v0.0.11.msi](https://github.com/p4tin/passit/releases/download/v0.0.11/PassIt-Windows-v0.0.11.msi)
 
-> Note: These links always point to the latest release. You can also visit the [releases page](https://github.com/p4tin/passit/releases) to see all versions and release notes.
+> Check the [releases page](https://github.com/p4tin/passit/releases) for newer versions. Update the version number in the links above if a newer release is available.
 
 ### macOS
 
